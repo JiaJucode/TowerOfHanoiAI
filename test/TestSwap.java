@@ -1,11 +1,9 @@
 import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
-import swappings.Parser;
 import swappings.Swap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,5 +25,5 @@ public class TestSwap {
     assertEquals("[8, 7, 6, 5, 4, 3, 2, 1]", test2.sortedRod());
   }
 
-  
+
 }
