@@ -9,7 +9,6 @@ public class Swap {
   private final List<Pair<Integer, Integer>> process = new ArrayList<>();
   private final int totalPieceCount;
   private int currentRodNumber;
-  private boolean completeSteps = false;
 
   public Swap(String startingArrangement) {
     rods = Parser.parse(startingArrangement);
@@ -30,25 +29,26 @@ public class Swap {
 
   public List<Pair<Integer, Integer>> getSteps(boolean displaySteps) {
     int sorted = 0;
-    currentRodNumber = getEmptyRod(displaySteps);
-    System.out.println(rods);
-    while (sorted != totalPieceCount) {
-      moveSmaller();
-      sorted++;
-      if (displaySteps) {
-        System.out.println(rods);
-      }
+    if (displaySteps) {
+      System.out.println(rods);
     }
-    completeSteps = true;
+    currentRodNumber = getEmptyRod(displaySteps);
+    while (sorted != totalPieceCount) {
+      moveSmaller(displaySteps);
+      sorted++;
+    }
     return process;
   }
 
-  private void addProcess(int nextRod, int currentRod) {
+  private void addProcess(int nextRod, int currentRod, boolean displaySteps) {
     rods.get(currentRod).push(rods.get(nextRod).pop());
     process.add(new Pair(nextRod, currentRod));
+    if (displaySteps) {
+      System.out.println(rods);
+    }
   }
 
-  private void moveSmaller() {
+  private void moveSmaller(boolean displaySteps) {
     if (rods.get(currentRodNumber).isEmpty()) {
       Pair<Integer, Integer> largest = new Pair(0, 0);
       for (int rodNumber = 0; rodNumber != rods.size(); rodNumber++) {
@@ -58,7 +58,7 @@ public class Swap {
           }
         }
       }
-      addProcess(largest.getKey(), currentRodNumber);
+      addProcess(largest.getKey(), currentRodNumber, displaySteps);
     } else {
       Pair<Integer, Integer> largest = new Pair(0, -1);
       Pair<Integer, Integer> smallest = new Pair(0, Integer.MAX_VALUE);
@@ -75,7 +75,7 @@ public class Swap {
         }
       }
       if (largest.getValue() == -1) {
-        addProcess(smallest.getKey(), currentRodNumber);
+        addProcess(smallest.getKey(), currentRodNumber, displaySteps);
       } else {
         // insert the number to the correct place
         int destination = largest.getKey();
@@ -85,12 +85,12 @@ public class Swap {
         int totalMovements = 0;
         while (!rods.get(currentRodNumber).isEmpty()
             && rods.get(destination).peek() > rods.get(currentRodNumber).peek()) {
-          addProcess(currentRodNumber, nextMovement);
+          addProcess(currentRodNumber, nextMovement, displaySteps);
           totalMovements++;
         }
-        addProcess(destination, currentRodNumber);
+        addProcess(destination, currentRodNumber, displaySteps);
         while (totalMovements != 0) {
-          addProcess(nextMovement, currentRodNumber);
+          addProcess(nextMovement, currentRodNumber, displaySteps);
           totalMovements--;
         }
       }
@@ -112,9 +112,9 @@ public class Swap {
     }
     while (!rods.get(smallestRod).isEmpty()) {
       if (smallestRod == 0) {
-        addProcess(smallestRod, smallestRod + 1);
+        addProcess(smallestRod, smallestRod + 1, displayRod);
       } else {
-        addProcess(smallestRod, smallestRod - 1);
+        addProcess(smallestRod, smallestRod - 1, displayRod);
       }
     }
     return smallestRod;
