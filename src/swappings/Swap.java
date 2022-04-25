@@ -60,25 +60,25 @@ public class Swap {
       }
       addProcess(largest.getKey(), currentRodNumber);
     } else {
-      PriorityQueue<Pair<Integer, Integer>> smaller =
-          new PriorityQueue<>((n1, n2) -> n1.getValue() < n1.getValue() ? 1 : -1);
-      PriorityQueue<Pair<Integer, Integer>> larger =
-          new PriorityQueue<>((n1, n2) -> n1.getValue() < n1.getValue() ? 1 : -1);
+      Pair<Integer, Integer> largest = new Pair(0, -1);
+      Pair<Integer, Integer> smallest = new Pair(0, Integer.MAX_VALUE);
       for (int rodNumber = 0; rodNumber != rods.size(); rodNumber++) {
         if (!rods.get(rodNumber).isEmpty()) {
-          if (rods.get(rodNumber).peek() < rods.get(currentRodNumber).peek()) {
-            smaller.add(new Pair(rodNumber, rods.get(rodNumber).peek()));
+          if (rods.get(rodNumber).peek() < rods.get(currentRodNumber).peek()
+              && rods.get(rodNumber).peek() < smallest.getKey()) {
+            smallest = new Pair(rodNumber, rods.get(rodNumber).peek());
           } else {
-            if (rodNumber != currentRodNumber) {
-              larger.add(new Pair(rodNumber, rods.get(rodNumber).peek()));
+            if (rodNumber != currentRodNumber && rods.get(rodNumber).peek() > largest.getKey()) {
+              largest = new Pair(rodNumber, rods.get(rodNumber).peek());
             }
           }
         }
       }
-      if (larger.isEmpty()) {
-        addProcess(smaller.poll().getKey(), currentRodNumber);
+      if (largest.getValue() == -1) {
+        addProcess(smallest.getKey(), currentRodNumber);
       } else {
-        int destination = larger.poll().getKey();
+        // insert the number to the correct place
+        int destination = largest.getKey();
         int nextMovement = destination < rods.size() - 1 && destination + 1 != currentRodNumber
             ? destination + 1
             : destination - 1;
